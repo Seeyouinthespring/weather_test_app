@@ -1,6 +1,3 @@
-import 'dart:html';
-
-import 'package:intl/intl.dart';
 import 'package:weather_test_app/data/models/city_data_model.dart';
 import 'package:weather_test_app/data/models/weather_info_section_data_model.dart';
 import 'package:weather_test_app/domain/models/forecast_view_model.dart';

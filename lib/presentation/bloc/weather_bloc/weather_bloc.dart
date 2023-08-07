@@ -13,7 +13,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   final LocationService locationService;
 
   WeatherBloc(this.weatherService, this.locationService) : super(WeatherLoading()){
-    on<onInit>(event, emit) async{
+    on<OnInit>((event, emit) async{
       emit(WeatherLoading());
 
 
@@ -28,7 +28,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       } else {
         emit(WeatherError(message: positionResult.swap().getOrElse(() => DefaultFailure()).message ));
       }
-    }
+    });
   }
 
   String _getErrorMessage(Failure failure){

@@ -2,11 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:weather_test_app/splash_screen.dart';
+import 'package:weather_test_app/presentation/screens/splash_screen.dart';
+import 'di.dart' as di;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  di.init();
   runApp(const MyApp());
 }
 

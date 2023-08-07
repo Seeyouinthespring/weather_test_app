@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:weather_test_app/firebase_auth_service.dart';
 import 'package:weather_test_app/user_model.dart';
-import 'package:weather_test_app/weather_screen.dart';
+import 'package:weather_test_app/presentation/screens/weather_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
