@@ -11,5 +11,6 @@ class OnRefresh extends WeatherEvent{
 }
 
 class OnSelectSection extends WeatherEvent{
-  const OnSelectSection();
+  final DateTime selectedDateTime;
+  const OnSelectSection(this.selectedDateTime);
 }

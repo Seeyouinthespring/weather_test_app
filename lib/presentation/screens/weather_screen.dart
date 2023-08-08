@@ -5,9 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:weather_test_app/presentation/bloc/weather_bloc/weather_event.dart';
 import 'package:weather_test_app/presentation/bloc/weather_bloc/weather_state.dart';
+import 'package:weather_test_app/utils/constants/icons_maps.dart';
+import 'package:weather_test_app/utils/models/extensions.dart';
 import '../../di.dart' as di;
 import 'package:weather_test_app/presentation/bloc/weather_bloc/weather_bloc.dart';
 
+import '../../utils/constants/months.dart';
 import '../components/forecast_sector_widget.dart';
 
 class WeatherScreen extends StatelessWidget {
@@ -33,19 +36,16 @@ class WeatherScreen extends StatelessWidget {
           child: BlocBuilder<WeatherBloc, WeatherState>(
             builder: (context, state) {
               if (state is WeatherLoading) {
-                print('WEATHER LOADING');
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(color: Colors.white,),
                 );
               }
               if (state is WeatherError) {
-                print('WEATHER ERROR');
                 return Center(
-                  child: Text(state.message),
+                  child: Text(state.message, style: TextStyle(color: Colors.white)),
                 );
               }
               if (state is WeatherData) {
-                print('WEATHER DATA');
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -93,7 +93,7 @@ class WeatherScreen extends StatelessWidget {
                           ),
                         ),
                         Image.asset(
-                          'assets/png/thunder.png',
+                          'assets/png/${IconsMaps.iconNames[state.data.currentWeatherDescription]}.png',
                           width: 180,
                           height: 180,
                         ),
@@ -109,7 +109,7 @@ class WeatherScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Гроза - ${state.data.currentWeatherDescription}',
+                      state.data.currentWeatherDescriptionDetailed.capitalize,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 17,
@@ -117,7 +117,7 @@ class WeatherScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Макс.: ${state.data.minT}º Мин: ${state.data.maxT}º',
+                      'Мин.: ${state.data.minT}º Макс: ${state.data.maxT}º',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 17,
@@ -154,7 +154,7 @@ class WeatherScreen extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  '${state.data.currentDate.day} ${state.data.currentDate.month}',
+                                  '${state.data.currentDate.day} ${Calendar.months[state.data.currentDate.month]}',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 15,
@@ -169,150 +169,18 @@ class WeatherScreen extends StatelessWidget {
                               padding: const EdgeInsets.all(16),
                               child: IntrinsicHeight(
                                 child: Row(
-                                  children: state.data.comingHours
-                                      .map(
-                                        (e) => ForecastSectorWidget(
-                                          isSelected: e.dateTime.compareTo(
-                                                  state.data.selected) ==
-                                              0,
-                                          forecast: e,
+                                  children: state.data.comingHours.map((e) =>
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () => context.read<WeatherBloc>().add(OnSelectSection(e.dateTime)),
+                                          child: ForecastSectorWidget(
+                                            isSelected: e.dateTime.compareTo(
+                                                state.data.selected) == 0,
+                                            forecast: e,
+                                          ),
                                         ),
-                                      )
-                                      .toList(),
-                                  // children: [
-                                  //   Expanded(
-                                  //     flex: 1,
-                                  //     child: Column(
-                                  //       mainAxisAlignment:
-                                  //       MainAxisAlignment.spaceEvenly,
-                                  //       children: [
-                                  //         Text(
-                                  //           '14:00',
-                                  //           style: TextStyle(
-                                  //               color: Colors.white,
-                                  //               fontSize: 15,
-                                  //               fontWeight: FontWeight.w400),
-                                  //         ),
-                                  //         SvgPicture.asset(
-                                  //           'assets/svg/Sun.svg',
-                                  //           width: 32,
-                                  //           height: 32,
-                                  //         ),
-                                  //         Text('28º',
-                                  //             style: TextStyle(
-                                  //                 color: Colors.white,
-                                  //                 fontSize: 17,
-                                  //                 fontWeight: FontWeight.w500)),
-                                  //       ],
-                                  //     ),
-                                  //   ),
-                                  //   Expanded(
-                                  //     flex: 1,
-                                  //     child: Container(
-                                  //       // decoration: BoxDecoration(
-                                  //       //     border: Border.all(color: Colors.white),
-                                  //       //     borderRadius: BorderRadius.all(Radius.circular(6))
-                                  //       // ),
-                                  //       child: Column(
-                                  //         mainAxisAlignment:
-                                  //         MainAxisAlignment.spaceEvenly,
-                                  //         children: [
-                                  //           Text(
-                                  //             '14:00',
-                                  //             style: TextStyle(
-                                  //                 color: Colors.white,
-                                  //                 fontSize: 15,
-                                  //                 fontWeight: FontWeight.w400),
-                                  //           ),
-                                  //           SvgPicture.asset(
-                                  //             'assets/svg/Sun.svg',
-                                  //             width: 32,
-                                  //             height: 32,
-                                  //           ),
-                                  //           Text('28º',
-                                  //               style: TextStyle(
-                                  //                   color: Colors.white,
-                                  //                   fontSize: 17,
-                                  //                   fontWeight: FontWeight.w500)),
-                                  //         ],
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  //   Expanded(
-                                  //     flex: 1,
-                                  //     child: Container(
-                                  //       // decoration: BoxDecoration(
-                                  //       //     border: Border.all(color: Colors.white),
-                                  //       //     borderRadius: BorderRadius.all(Radius.circular(6))
-                                  //       // ),
-                                  //       child: Column(
-                                  //         mainAxisAlignment:
-                                  //         MainAxisAlignment.spaceEvenly,
-                                  //         children: [
-                                  //           Text(
-                                  //             '14:00',
-                                  //             style: TextStyle(
-                                  //               color: Colors.white,
-                                  //               fontSize: 15,
-                                  //               fontWeight: FontWeight.w400,
-                                  //             ),
-                                  //           ),
-                                  //           SvgPicture.asset(
-                                  //             'assets/svg/Sun.svg',
-                                  //             width: 32,
-                                  //             height: 32,
-                                  //           ),
-                                  //           Text(
-                                  //             '28º',
-                                  //             style: TextStyle(
-                                  //               color: Colors.white,
-                                  //               fontSize: 17,
-                                  //               fontWeight: FontWeight.w500,
-                                  //             ),
-                                  //           ),
-                                  //         ],
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  //   Expanded(
-                                  //     flex: 1,
-                                  //     child: Container(
-                                  //       decoration: BoxDecoration(
-                                  //         color: Colors.white.withOpacity(0.4),
-                                  //         border: Border.all(color: Colors.white),
-                                  //         borderRadius:
-                                  //         BorderRadius.all(Radius.circular(6)),
-                                  //       ),
-                                  //       child: Column(
-                                  //         mainAxisAlignment:
-                                  //         MainAxisAlignment.spaceEvenly,
-                                  //         children: [
-                                  //           Text(
-                                  //             '14:00',
-                                  //             style: TextStyle(
-                                  //               color: Colors.white,
-                                  //               fontSize: 15,
-                                  //               fontWeight: FontWeight.w400,
-                                  //             ),
-                                  //           ),
-                                  //           SvgPicture.asset(
-                                  //             'assets/svg/Sun.svg',
-                                  //             width: 32,
-                                  //             height: 32,
-                                  //           ),
-                                  //           Text(
-                                  //             '28º',
-                                  //             style: TextStyle(
-                                  //               color: Colors.white,
-                                  //               fontSize: 17,
-                                  //               fontWeight: FontWeight.w500,
-                                  //             ),
-                                  //           ),
-                                  //         ],
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  // ],
+                                      ),
+                                  ).toList(),
                                 ),
                               ),
                             ),
@@ -364,7 +232,7 @@ class WeatherScreen extends StatelessWidget {
                               Expanded(
                                 flex: 2,
                                 child: Text(
-                                  "${state.data.windDirection}Ветер восточный",
+                                  state.data.windDirection,
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 15,
@@ -424,9 +292,8 @@ class WeatherScreen extends StatelessWidget {
                   ],
                 );
               }
-              print('WEATHER ELSE');
               return const Center(
-                child: CircularProgressIndicator(),
+                child: Text('Unknown state', style: TextStyle(color: Colors.white)),
               );
             },
           ),

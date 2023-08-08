@@ -23,6 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
         .addPostFrameCallback((timeStamp) => FocusScope.of(context).unfocus());
 
     Timer(const Duration(seconds: 3), () async {
+
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const LoginScreen()));
     });

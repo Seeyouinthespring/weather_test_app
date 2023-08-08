@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_test_app/domain/models/forecast_view_model.dart';
+import 'package:weather_test_app/utils/constants/icons_maps.dart';
 
 class ForecastSectorWidget extends StatelessWidget {
   final bool isSelected;
@@ -31,7 +32,7 @@ class ForecastSectorWidget extends StatelessWidget {
             ),
           ),
           SvgPicture.asset(
-            'assets/svg/Sun.svg',
+            'assets/svg/${IconsMaps.iconNames[forecast.weatherDescription]}.svg',
             width: 32,
             height: 32,
           ),

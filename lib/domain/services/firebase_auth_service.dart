@@ -1,13 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:weather_test_app/user_model.dart';
 
-class FirebaseAuthService {
+abstract interface class AuthService{
+  Future<UserModel> signIn({required String email, required String password});
+}
+
+class FirebaseAuthService extends AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   User? get currentUser => _firebaseAuth.currentUser;
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
+  @override
   Future<UserModel> signIn({required String email, required String password}) async {
     try{
       UserCredential userCredential = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
@@ -18,13 +23,8 @@ class FirebaseAuthService {
       );
       return userModel;
     } on FirebaseAuthException catch (e){
-      print(e.message);
-      print(e.code);
-
-      return UserModel(email: "", id: "", error: "");
+      return UserModel(email: "", id: "", error: e.message ?? "Firebase error");
     }
-
-    //40sHpqnNhbQ0TYG6IjCvowgNNQd2
   }
 
   Future<void> signOut() async {

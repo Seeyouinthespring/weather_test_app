@@ -10,36 +10,28 @@ abstract interface class WeatherRemoteDataSource{
 class WeatherRemoteDataSourceImplementation implements WeatherRemoteDataSource{
 
   final Dio dio;
-  static const _baseUrl = "api.openweathermap.org/data/2.5/forecast";
+  static const _baseUrl = "https://api.openweathermap.org/data/2.5/forecast";
   WeatherRemoteDataSourceImplementation(this.dio);
-
-
 
   @override
   Future<ForecastDataModel> getWeatherByLocation(CoordinatesDataModel coordinates) async {
-
     try{
       final response = await dio.get(_baseUrl,
         queryParameters: {
           'lat': coordinates.lat,
-          'long': coordinates.long,
+          'lon': coordinates.long,
           'appid': '52b28e18f20e606ccf895332a455a161',
+          'units': 'metric',
+          'lang': 'ru'
         }
       );
-
 
       if (response.statusCode == 200){
         return ForecastDataModel.fromJson(response.data as Map <String, dynamic>);
       }
       return ForecastDataModel.placeholder();
-
     } catch (e) {
-      print('ERROR type ---> ${e.runtimeType.toString()}');
-      print('ERROR ---> ${e}');
-
       return ForecastDataModel.placeholder();
     }
-
   }
-
 }

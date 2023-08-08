@@ -1,8 +1,27 @@
+import 'package:hive/hive.dart';
+import 'package:weather_test_app/data/models/weather_description_data_model.dart';
+import 'package:weather_test_app/data/models/wind_data_model.dart';
+
+import 'main_weather_info_data_model.dart';
+
+part 'weather_info_section_data_model.g.dart';
+
+@HiveType(typeId: 3)
 class WeatherInfoSectionDataModel{
+
+  @HiveField(0)
   final int ticks;
+
+  @HiveField(1)
   final String dateTime;
+
+  @HiveField(2)
   final WindDataModel wind;
+
+  @HiveField(3)
   final WeatherDescriptionDataModel weather;
+
+  @HiveField(4)
   final MainWeatherInfoDataModel main;
 
   WeatherInfoSectionDataModel({ required this.ticks, required this.dateTime, required this.wind, required this.weather, required this.main});
@@ -11,49 +30,7 @@ class WeatherInfoSectionDataModel{
       ticks: json['dt'],
       dateTime: json['dt_txt'],
       wind: WindDataModel.fromJson(json['wind']),
-      weather: WeatherDescriptionDataModel.fromJson(json['weather']),
+      weather: WeatherDescriptionDataModel.fromJson(json['weather'][0]),
       main: MainWeatherInfoDataModel.fromJson(json['main']),
-  );
-}
-
-class WindDataModel{
-  final double speed;
-  final int degree;
-
-  WindDataModel({required this.speed, required this.degree});
-
-  factory WindDataModel.fromJson(Map<String, dynamic> json) => WindDataModel(
-    speed: json['speed'],
-    degree: json['deg'],
-  );
-}
-
-class WeatherDescriptionDataModel{
-  final int id;
-  final String description;
-  final String main;
-
-  WeatherDescriptionDataModel({required this.id, required this.description, required this.main});
-
-  factory WeatherDescriptionDataModel.fromJson(Map<String, dynamic> json) => WeatherDescriptionDataModel(
-    id: json['id'],
-    description: json['description'],
-    main: json['main'],
-  );
-}
-
-class MainWeatherInfoDataModel{
-  final double t;
-  final double tMax;
-  final double tMin;
-  final double humidity;
-
-  MainWeatherInfoDataModel({required this.t, required this.tMax, required this.tMin, required this.humidity});
-
-  factory MainWeatherInfoDataModel.fromJson(Map<String, dynamic> json) => MainWeatherInfoDataModel(
-      t: json['temp'],
-      tMax: json['temp_min'],
-      tMin: json['temp_max'],
-      humidity: json['humidity'],
   );
 }

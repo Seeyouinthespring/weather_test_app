@@ -13,7 +13,7 @@ final locator = GetIt.instance;
 
 void init(){
   //bloc
-  locator.registerFactory(() => WeatherBloc(locator(), locator()));
+  locator.registerFactory(() => WeatherBloc(locator(), locator(), locator()));
 
   //data sources
   locator.registerLazySingleton<WeatherRemoteDataSource>(

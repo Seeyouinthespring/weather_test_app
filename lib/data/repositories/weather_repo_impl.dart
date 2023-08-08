@@ -4,6 +4,7 @@ import 'package:weather_test_app/data/models/coordinates_data_model.dart';
 import 'package:weather_test_app/data/models/forecast_data_model.dart';
 
 import 'package:weather_test_app/domain/models/forecast_view_model.dart';
+import 'package:weather_test_app/utils/models/extensions.dart';
 
 import 'package:weather_test_app/utils/models/failure.dart';
 
