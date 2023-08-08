@@ -9,6 +9,8 @@ import 'package:weather_test_app/domain/services/permissions_service.dart';
 import 'package:weather_test_app/domain/services/weather_service.dart';
 import 'package:weather_test_app/presentation/bloc/weather_bloc/weather_bloc.dart';
 
+import 'data/datasource/weather_local_data_source.dart';
+
 final locator = GetIt.instance;
 
 void init(){
@@ -19,9 +21,13 @@ void init(){
   locator.registerLazySingleton<WeatherRemoteDataSource>(
         () => WeatherRemoteDataSourceImplementation(Dio()),
   );
+  locator.registerLazySingleton<WeatherLocalDataSource>(
+          () => WeatherLocalDataSourceImplementation(),
+  );
 
   //repository
-  locator.registerLazySingleton<WeatherRepository>(() => WeatherRepositoryImplementation(dataSource: locator()));
+  locator.registerLazySingleton<WeatherRepository>(
+          () => WeatherRepositoryImplementation(remoteDataSource: locator(), localDataSource: locator()));
 
   // services
   locator.registerLazySingleton(() => WeatherService(repository: locator()));

@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:weather_test_app/user_model.dart';
+import 'package:weather_test_app/domain/models/user_model.dart';
 
 abstract interface class AuthService{
   Future<UserModel> signIn({required String email, required String password});

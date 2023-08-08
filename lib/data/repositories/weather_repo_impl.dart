@@ -4,28 +4,37 @@ import 'package:weather_test_app/data/models/coordinates_data_model.dart';
 import 'package:weather_test_app/data/models/forecast_data_model.dart';
 
 import 'package:weather_test_app/domain/models/forecast_view_model.dart';
+import 'package:weather_test_app/utils/models/exceptions.dart';
 import 'package:weather_test_app/utils/models/extensions.dart';
 
 import 'package:weather_test_app/utils/models/failure.dart';
 
 import '../../domain/repositories/weather_repo.dart';
+import '../datasource/weather_local_data_source.dart';
 
 class WeatherRepositoryImplementation implements WeatherRepository{
 
-  final WeatherRemoteDataSource dataSource;
+  final WeatherRemoteDataSource remoteDataSource;
+  final WeatherLocalDataSource localDataSource;
 
-  WeatherRepositoryImplementation({required this.dataSource});
+  WeatherRepositoryImplementation({required this.remoteDataSource, required this.localDataSource});
 
   @override
   Future<Either<Failure, ForecastViewModel>> getForecastByLocation({required double lat, required double long}) async {
     try{
-      ForecastDataModel forecastDataModel = await dataSource.getWeatherByLocation(CoordinatesDataModel(lat: lat, long: long));
-      ForecastViewModel forecastViewModel = forecastDataModel.toViewModel;
+      ForecastDataModel forecastDataModel = await remoteDataSource.getWeatherByLocation(CoordinatesDataModel(lat: lat, long: long));
+      await localDataSource.saveForecast(forecastDataModel);
+      ForecastViewModel forecastViewModel = forecastDataModel.toViewModel(true);
       return Right(forecastViewModel);
-    } catch (e){
-      return Left(DefaultFailure(message: e.toString()));
+    } on ServerException {
+      try {
+        final ForecastDataModel model = await localDataSource.getForecast();
+        return Right(model.toViewModel(false));
+      } on CacheException catch (e) {
+        return Left(ServerFailure(message: e.message));
+      }
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
     }
-
   }
-
 }

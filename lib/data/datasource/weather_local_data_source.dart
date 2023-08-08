@@ -15,7 +15,7 @@ class WeatherLocalDataSourceImplementation implements WeatherLocalDataSource{
       ForecastDataModel forecast = box.getAt(0);
       return forecast;
     } catch (e) {
-      throw CacheException();
+      throw const CacheException(message: "Cant get any data from cache");
     }
   }
 
@@ -25,5 +25,4 @@ class WeatherLocalDataSourceImplementation implements WeatherLocalDataSource{
     box.clear();
     box.add(model);
   }
-  
 }

@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:weather_test_app/presentation/bloc/weather_bloc/weather_event.dart';
 import 'package:weather_test_app/presentation/bloc/weather_bloc/weather_state.dart';
+import 'package:weather_test_app/presentation/components/custom_text_header.dart';
+import 'package:weather_test_app/presentation/components/custom_text_label.dart';
 import 'package:weather_test_app/utils/constants/icons_maps.dart';
 import 'package:weather_test_app/utils/models/extensions.dart';
 import '../../di.dart' as di;
@@ -32,17 +34,19 @@ class WeatherScreen extends StatelessWidget {
         ),
         child: BlocProvider(
           create: (_) => di.locator<WeatherBloc>()..add(const OnInit()),
-
           child: BlocBuilder<WeatherBloc, WeatherState>(
             builder: (context, state) {
               if (state is WeatherLoading) {
                 return const Center(
-                  child: CircularProgressIndicator(color: Colors.white,),
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
                 );
               }
               if (state is WeatherError) {
                 return Center(
-                  child: Text(state.message, style: TextStyle(color: Colors.white)),
+                  child: Text(state.message,
+                      style: const TextStyle(color: Colors.white)),
                 );
               }
               if (state is WeatherData) {
@@ -64,14 +68,7 @@ class WeatherScreen extends StatelessWidget {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 8),
-                            child: Text(
-                              state.data.location,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                            child: CustomTextHeader(text: state.data.location),
                           )
                         ],
                       ),
@@ -108,22 +105,12 @@ class WeatherScreen extends StatelessWidget {
                         height: 0.9,
                       ),
                     ),
-                    Text(
-                      state.data.currentWeatherDescriptionDetailed.capitalize,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    Text(
-                      'Мин.: ${state.data.minT}º Макс: ${state.data.maxT}º',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
+                    CustomTextLabel(
+                        text: state
+                            .data.currentWeatherDescriptionDetailed.capitalize),
+                    CustomTextLabel(
+                        text:
+                            'Мин.: ${state.data.minT}º Макс: ${state.data.maxT}º'),
                     Container(
                       margin: const EdgeInsets.all(24),
                       height: 230,
@@ -145,22 +132,10 @@ class WeatherScreen extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  'Сегодня',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                Text(
-                                  '${state.data.currentDate.day} ${Calendar.months[state.data.currentDate.month]}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
+                                const CustomTextHeader(text: 'Сегодня'),
+                                CustomTextHeader(
+                                    text:
+                                        '${state.data.currentDate.day} ${Calendar.months[state.data.currentDate.month]}'),
                               ],
                             ),
                           ),
@@ -169,18 +144,24 @@ class WeatherScreen extends StatelessWidget {
                               padding: const EdgeInsets.all(16),
                               child: IntrinsicHeight(
                                 child: Row(
-                                  children: state.data.comingHours.map((e) =>
-                                      Expanded(
-                                        child: GestureDetector(
-                                          onTap: () => context.read<WeatherBloc>().add(OnSelectSection(e.dateTime)),
-                                          child: ForecastSectorWidget(
-                                            isSelected: e.dateTime.compareTo(
-                                                state.data.selected) == 0,
-                                            forecast: e,
+                                  children: state.data.comingHours
+                                      .map(
+                                        (e) => Expanded(
+                                          child: GestureDetector(
+                                            onTap: () => context
+                                                .read<WeatherBloc>()
+                                                .add(OnSelectSection(
+                                                    e.dateTime)),
+                                            child: ForecastSectorWidget(
+                                              isSelected: e.dateTime.compareTo(
+                                                      state.data.selected) ==
+                                                  0,
+                                              forecast: e,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                  ).toList(),
+                                      )
+                                      .toList(),
                                 ),
                               ),
                             ),
@@ -194,7 +175,8 @@ class WeatherScreen extends StatelessWidget {
                       height: 100,
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.3),
-                        borderRadius: const BorderRadius.all(Radius.circular(20)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -208,7 +190,7 @@ class WeatherScreen extends StatelessWidget {
                                     children: [
                                       WidgetSpan(
                                         child: SvgPicture.asset(
-                                            'assets/svg/Wind.svg',
+                                          'assets/svg/Wind.svg',
                                         ),
                                       ),
                                       WidgetSpan(
@@ -218,7 +200,8 @@ class WeatherScreen extends StatelessWidget {
                                           child: Text(
                                             '${state.data.windSpeed} м/с',
                                             style: TextStyle(
-                                              color: Colors.white.withOpacity(0.2),
+                                              color:
+                                                  Colors.white.withOpacity(0.2),
                                               fontWeight: FontWeight.w500,
                                               fontSize: 15,
                                             ),
@@ -231,14 +214,8 @@ class WeatherScreen extends StatelessWidget {
                               ),
                               Expanded(
                                 flex: 2,
-                                child: Text(
-                                  state.data.windDirection,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
+                                child: CustomTextHeader(
+                                    text: state.data.windDirection),
                               ),
                             ],
                           ),
@@ -251,7 +228,7 @@ class WeatherScreen extends StatelessWidget {
                                     children: [
                                       WidgetSpan(
                                         child: SvgPicture.asset(
-                                            'assets/svg/Drop.svg',
+                                          'assets/svg/Drop.svg',
                                         ),
                                       ),
                                       WidgetSpan(
@@ -275,14 +252,9 @@ class WeatherScreen extends StatelessWidget {
                               ),
                               Expanded(
                                 flex: 2,
-                                child: Text(
-                                  "${state.data.humidityDescription} влажность",
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
+                                child: CustomTextHeader(
+                                    text:
+                                        "${state.data.humidityDescription} влажность"),
                               ),
                             ],
                           ),
@@ -293,7 +265,10 @@ class WeatherScreen extends StatelessWidget {
                 );
               }
               return const Center(
-                child: Text('Unknown state', style: TextStyle(color: Colors.white)),
+                child: Text(
+                  'Unknown state',
+                  style: TextStyle(color: Colors.white),
+                ),
               );
             },
           ),
